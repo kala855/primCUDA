@@ -68,7 +68,10 @@ __global__ void init_boolean_vector(bool *d_boolean_vector, int numNodos)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i<numNodos){
-		d_boolean_vector[i] = false;
+		if(i==0)
+			d_boolean_vector[i] = true;
+		else
+			d_boolean_vector[i] = false;
 	}
 
 }
@@ -143,9 +146,11 @@ int stpPrim(int *grafo){
 	print_boolean_vector(h_boolean_vector);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	ASSERT(cudaSuccess == cudaFreeHost(h_stp),   "Host deallocation failed",   -1);
+	ASSERT(cudaSuccess == cudaFreeHost(h_stp),   "Host stp deallocation failed",   -1);
+	ASSERT(cudaSuccess == cudaFreeHost(h_boolean_vector),   "Host boolean vector deallocation failed",   -1);
 	ASSERT(cudaSuccess == cudaFree(d_stp),   "Device stp deallocation failed",   -1);
 	ASSERT(cudaSuccess == cudaFree(d_grafo),   "Device grafo deallocation failed",   -1);
+	ASSERT(cudaSuccess == cudaFree(d_boolean_vector),   "Device boolean vector deallocation failed",   -1);
 
 	return EXIT_SUCCESS;
 }
